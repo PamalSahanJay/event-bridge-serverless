@@ -28,6 +28,11 @@ module.exports.processMessages = async (event) => {
         console.log(parseBody)
         console.log("processing vehicle details ..." + parseBody.detail.vehicleNo)
         console.log("success .." + record.messageId)
+
+        if(typeof parseBody.detail.vehicleNo !== 'string') {
+          throw new Error("invalid data")
+        }
+
       } catch (error) {
         batchItemFailures.push({
           itemIdentifier: record.messageId

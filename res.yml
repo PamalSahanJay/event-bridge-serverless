@@ -8,9 +8,14 @@ SQStopic:
   Type: AWS::SQS::Queue
   Properties:
     QueueName: QR-topic
-    VisibilityTimeout: 30
-    MaximumMessageSize: 2048
-    MessageRetentionPeriod: 345600 
+    RedrivePolicy:
+      deadLetterTargetArn: !GetAtt DLSQStopic.Arn
+      maxReceiveCount: 1
+
+DLSQStopic:
+  Type: AWS::SQS::Queue
+  Properties:
+    QueueName: QR-topic-DLQ
 
 TargetSQSRule:
   Type: AWS::Events::Rule
