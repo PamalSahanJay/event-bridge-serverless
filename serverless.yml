@@ -13,7 +13,15 @@ provider:
       statements: ${file(iam-role.yml):iamRoleStatements}
 
 functions:
-  hello:
+  processEventLambda:
+    handler: src/lambda.processMessages
+    events:
+      - sqs:
+          arn: !GetAtt SQStopic.Arn
+          batchSize: 10
+          functionResponseType: ReportBatchItemFailures
+
+  putEventLambda:
     handler: src/lambda.handler
     events:
       - http:
@@ -23,7 +31,7 @@ functions:
       EventBusName: !Ref EventBus 
 
 resources:
- Resources: ${file(eventBridge.yml)}
+ Resources: ${file(res.yml)}
  Outputs:
     EventBusName:
       Value: !Ref EventBus

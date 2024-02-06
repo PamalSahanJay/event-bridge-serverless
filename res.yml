@@ -1,0 +1,41 @@
+#create eventBridge
+EventBus:
+  Type: AWS::Events::EventBus
+  Properties:
+    Name: QR_EVENT_BUS
+
+SQStopic:
+  Type: AWS::SQS::Queue
+  Properties:
+    QueueName: QR-topic
+    VisibilityTimeout: 30
+    MaximumMessageSize: 2048
+    MessageRetentionPeriod: 345600 
+
+TargetSQSRule:
+  Type: AWS::Events::Rule
+  Properties:
+    EventBusName: !GetAtt EventBus.Arn
+    EventPattern:
+      source:
+        - "fuel-app"
+      detail-type:
+        - "user-signup"
+    Targets: 
+      - Arn: !GetAtt SQStopic.Arn
+        Id: qr-event-bus-sqs-${sls:stage}
+
+SQSPolicy: 
+  Type: AWS::SQS::QueuePolicy
+  Properties: 
+    Queues: 
+      - !Ref SQStopic
+    PolicyDocument: 
+      Statement: 
+        - 
+          Action: 
+            - "SQS:SendMessage" 
+          Effect: "Allow"
+          Resource: !GetAtt SQStopic.Arn
+          Principal:
+            Service: events.amazonaws.com

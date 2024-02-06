@@ -16,3 +16,24 @@ module.exports.handler = async (event) => {
   }
 
 };
+
+module.exports.processMessages = async (event) => {
+  let records = event.Records;
+  let batchItemFailures = [];
+
+  if(records.length) {
+    for (const record of records) {
+      try {
+        const parseBody = JSON.parse(record.body)
+        console.log(parseBody)
+        console.log("processing vehicle details ..." + parseBody.detail.vehicleNo)
+        console.log("success .." + record.messageId)
+      } catch (error) {
+        batchItemFailures.push({
+          itemIdentifier: record.messageId
+        })
+      }
+    }
+  }
+  return {batchItemFailures};
+}

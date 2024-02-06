@@ -8,7 +8,12 @@
   },
   "author": "",
   "license": "ISC",
+  "devDependencies": {
+    "serverless-dotenv-plugin": "^6.0.0",
+    "serverless-offline": "^13.2.0"
+  },
   "dependencies": {
-    "@aws-sdk/client-eventbridge": "^3.504.0"
+    "@aws-sdk/client-eventbridge": "^3.504.0",
+    "dotenv": "^16.3.1"
   }
 }
